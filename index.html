@@ -4,19 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lagerverwaltung</title>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
-
-<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
+<script src="https://unpkg.com/html5-qrcode"></script>
 <style>
-body { font-family: Arial; margin: 15px; background:#f2f2f2; }
-input, button { width:100%; padding:12px; margin:6px 0; font-size:18px; }
-.card { background:white; padding:10px; margin:10px 0; border-radius:8px; }
-.qr { margin-top:10px; }
-#reader { margin-top:15px; }
+body{font-family:Arial;margin:15px;background:#f2f2f2}
+input,button{width:100%;padding:12px;margin:6px 0;font-size:18px}
+.card{background:white;padding:10px;margin:10px 0;border-radius:8px}
 </style>
 </head>
 <body>
