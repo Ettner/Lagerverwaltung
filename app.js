@@ -50,6 +50,9 @@ db.ref("geraete").on("value", snap => {
       <button onclick="toggle(${d.id}, ${!d.imLager})">
         ${d.imLager ? "Auschecken" : "Zurück"}
       </button>
+      <button onclick="deleteDevice(${d.id})" style="margin-left:10px; color:red;">
+        Löschen
+      </button>
       <div id="qr${d.id}"></div>
     `;
 
@@ -66,6 +69,13 @@ db.ref("geraete").on("value", snap => {
 // Status ändern
 function toggle(id, status) {
   db.ref("geraete/" + id).update({ imLager: status });
+}
+
+// Gerät löschen
+function deleteDevice(id) {
+  if (confirm("Möchten Sie dieses Gerät wirklich löschen?")) {
+    db.ref("geraete/" + id).remove();
+  }
 }
 
 // QR Scan
