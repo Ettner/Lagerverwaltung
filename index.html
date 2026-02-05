@@ -17,6 +17,7 @@ input, button { width:100%; padding:12px; margin:6px 0; font-size:18px; }
 .card { background:white; padding:10px; margin:10px 0; border-radius:8px; }
 .qr { margin-top:10px; }
 #reader { margin-top:15px; }
+.delete-btn { color:red; margin-left:10px; }
 </style>
 </head>
 <body>
@@ -28,7 +29,17 @@ input, button { width:100%; padding:12px; margin:6px 0; font-size:18px; }
 <button onclick="addDevice()">Hinzufügen</button>
 
 <h2>Geräte</h2>
-<div id="list"></div>
+<div id="list">
+  <!-- Beispiel für ein Gerät mit Löschen-Button -->
+  <!-- Die Karten werden in app.js dynamisch erzeugt -->
+  <!-- <div class="card">
+        <b>Beispielgerät</b><br>
+        Lager: A | Regal: 1<br>
+        <button onclick="toggle(123, false)">Auschecken</button>
+        <button class="delete-btn" onclick="deleteDevice(123)">Löschen</button>
+        <div id="qr123" class="qr"></div>
+  </div> -->
+</div>
 
 <h2>QR scannen</h2>
 <button onclick="startScan()">Scanner starten</button>
