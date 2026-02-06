@@ -57,7 +57,6 @@ db.ref("geraete").on("value", snap=>{
     div.className = "card";
     div.style.borderLeft = `10px solid ${imLager ? "green" : "red"}`;
 
-    // ✅ Dropdown wird HIER gebaut (JavaScript, nicht HTML)
     let checkoutDropdown = "";
 
     if(d.anzahlLager > 0){
@@ -109,7 +108,7 @@ db.ref("geraete").on("value", snap=>{
 });
 
 
-// ➖ Auschecken (Teilmenge)
+// ➖ Auschecken
 function checkout(id){
   const menge = parseInt(document.getElementById("out"+id).value);
 
@@ -126,19 +125,8 @@ function checkout(id){
 function checkin(id){
   const menge = parseInt(document.getElementById("in"+id).value);
 
-  if(!menge || menge <= 0){
-    alert("Gültige Menge eingeben!");
-    return;
-  }
-
   db.ref("geraete/"+id).once("value").then(snap=>{
     const d = snap.val();
-
-    if(d.anzahlLager + menge > d.anzahlGesamt){
-      alert("Mehr als Gesamtbestand!");
-      return;
-    }
-
     db.ref("geraete/"+id).update({
       anzahlLager: d.anzahlLager + menge
     });
@@ -146,35 +134,9 @@ function checkin(id){
 }
 
 
-// 🗑 Löschen mit Warnung
+// 🗑 Löschen
 function deleteDevice(id){
   if(confirm("Gerät wirklich löschen?")){
     db.ref("geraete/"+id).remove();
   }
-}
-
-
-// 📷 QR Scan zeigt Live-Daten
-function startScan(){
-  const qr=new Html5Qrcode("reader");
-  qr.start({facingMode:"environment"},{fps:10,qrbox:250}, msg=>{
-    
-    const id = msg;
-
-    db.ref("geraete/"+id).once("value").then(snap=>{
-      const d = snap.val();
-      const imLager = d.anzahlLager > 0;
-
-      scanResult.innerHTML=`
-        <div style="border-left:10px solid ${imLager?"green":"red"};padding:10px;">
-          <h3>${d.name}</h3>
-          Lager: ${d.lager}<br>
-          Regal: ${d.regal}<br>
-          Bestand: ${d.anzahlLager} / ${d.anzahlGesamt}
-        </div>
-      `;
-    });
-
-    qr.stop();
-  });
 }
