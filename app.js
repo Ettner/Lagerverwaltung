@@ -12,11 +12,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+// Tabs anzeigen
 function showTab(tab){
   document.getElementById("lagerTab").style.display = tab==="lager"?"block":"none";
   document.getElementById("draussenTab").style.display = tab==="draussen"?"block":"none";
 }
-
 
 // ➕ Gerät hinzufügen
 function addDevice(){
@@ -48,98 +48,108 @@ function addDevice(){
   document.getElementById("anzahl").value = "";
 }
 
-  const id = Date.now();
-
-  db.ref("geraete/"+id).set({
-    id, name, lager, regal,
-    anzahlGesamt: anzahl,
-    anzahlLager: anzahl
-  });
-
-  document.querySelectorAll("input").forEach(i=>i.value="");
-}
-
-
-// 🔄 Anzeige
+// 🔄 Realtime Anzeige
 db.ref("geraete").on("value", snap=>{
   const data = snap.val() || {};
-  lagerTab.innerHTML="";
-  draussenTab.innerHTML="";
+  const lagerTab = document.getElementById("lagerTab");
+  const draussenTab = document.getElementById("draussenTab");
+  lagerTab.innerHTML = "";
+  draussenTab.innerHTML = "";
 
   Object.values(data).forEach(d=>{
     const imLager = d.anzahlLager > 0;
     const fehlend = d.anzahlGesamt - d.anzahlLager;
 
-    const div=document.createElement("div");
-    div.className="card";
-    div.style.borderLeft=`10px solid ${imLager?"green":"red"}`;
+    const div = document.createElement("div");
+    div.className = "card";
+    div.style.borderLeft = imLager ? "10px solid green" : "10px solid red";
+
+    // Name + Lagerinfo
+    const info = document.createElement("div");
+    info.innerHTML = `<b>${d.name}</b><br>${d.lager} | ${d.regal}<br><b>${d.anzahlLager} / ${d.anzahlGesamt} im Lager</b>`;
+    div.appendChild(info);
 
     // Checkout Dropdown
-    let outHTML = "<i>Kein Bestand im Lager</i>";
+    const outContainer = document.createElement("div");
     if(d.anzahlLager > 0){
-      outHTML = `
-        <select id="out${d.id}">
-          ${[...Array(d.anzahlLager)].map((_,i)=>`<option>${i+1}</option>`).join("")}
-        </select>
-        <button onclick="checkout(${d.id})">Auschecken</button>
-      `;
+      const selectOut = document.createElement("select");
+      selectOut.id = `out${d.id}`;
+      for(let i=1; i<=d.anzahlLager; i++){
+        const option = document.createElement("option");
+        option.value = i; option.textContent = i;
+        selectOut.appendChild(option);
+      }
+      const btnOut = document.createElement("button");
+      btnOut.textContent = "Auschecken";
+      btnOut.onclick = ()=>checkout(d.id);
+      outContainer.appendChild(selectOut);
+      outContainer.appendChild(btnOut);
+    } else {
+      outContainer.innerHTML = "<i>Kein Bestand im Lager</i>";
     }
+    div.appendChild(document.createElement("br"));
+    div.appendChild(outContainer);
 
     // Checkin Dropdown
-    let inHTML = "<i>Alles im Lager</i>";
+    const inContainer = document.createElement("div");
     if(fehlend > 0){
-      inHTML = `
-        <select id="in${d.id}">
-          ${[...Array(fehlend)].map((_,i)=>`<option>${i+1}</option>`).join("")}
-        </select>
-        <button onclick="checkin(${d.id})">Zurückbringen</button>
-      `;
+      const selectIn = document.createElement("select");
+      selectIn.id = `in${d.id}`;
+      for(let i=1; i<=fehlend; i++){
+        const option = document.createElement("option");
+        option.value = i; option.textContent = i;
+        selectIn.appendChild(option);
+      }
+      const btnIn = document.createElement("button");
+      btnIn.textContent = "Zurückbringen";
+      btnIn.onclick = ()=>checkin(d.id);
+      inContainer.appendChild(selectIn);
+      inContainer.appendChild(btnIn);
+    } else {
+      inContainer.innerHTML = "<i>Alles im Lager</i>";
     }
+    div.appendChild(document.createElement("br"));
+    div.appendChild(inContainer);
 
-    div.innerHTML=`
-      <b>${d.name}</b><br>
-      ${d.lager} | ${d.regal}<br>
-      <b>${d.anzahlLager} / ${d.anzahlGesamt} im Lager</b><br><br>
+    // Löschen Button
+    const btnDel = document.createElement("button");
+    btnDel.textContent = "Löschen";
+    btnDel.style.backgroundColor = "red";
+    btnDel.style.color = "white";
+    btnDel.onclick = ()=>deleteDevice(d.id);
+    div.appendChild(document.createElement("br"));
+    div.appendChild(btnDel);
 
-      ${outHTML}<br><br>
-      ${inHTML}<br><br>
-
-      <button onclick="deleteDevice(${d.id})" style="background:red;color:white">Löschen</button>
-
-      <div id="qr${d.id}"></div>
-    `;
+    // QR-Code
+    const qrDiv = document.createElement("div");
+    qrDiv.id = `qr${d.id}`;
+    div.appendChild(qrDiv);
+    new QRCode(qrDiv, {text:String(d.id), width:100, height:100});
 
     if(imLager) lagerTab.appendChild(div);
     else draussenTab.appendChild(div);
-
-    new QRCode(document.getElementById(`qr${d.id}`),{
-      text:String(d.id),width:100,height:100
-    });
   });
 });
 
-
-// Aktionen
+// ➖ Checkout
 function checkout(id){
   const menge = parseInt(document.getElementById("out"+id).value);
   db.ref("geraete/"+id).once("value").then(snap=>{
-    const d=snap.val();
-    db.ref("geraete/"+id).update({
-      anzahlLager: d.anzahlLager - menge
-    });
+    const d = snap.val();
+    db.ref("geraete/"+id).update({anzahlLager: d.anzahlLager - menge});
   });
 }
 
+// ➕ Checkin
 function checkin(id){
   const menge = parseInt(document.getElementById("in"+id).value);
   db.ref("geraete/"+id).once("value").then(snap=>{
-    const d=snap.val();
-    db.ref("geraete/"+id).update({
-      anzahlLager: d.anzahlLager + menge
-    });
+    const d = snap.val();
+    db.ref("geraete/"+id).update({anzahlLager: d.anzahlLager + menge});
   });
 }
 
+// 🗑 Löschen
 function deleteDevice(id){
   if(confirm("Wirklich löschen?")){
     db.ref("geraete/"+id).remove();
