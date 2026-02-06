@@ -47,52 +47,51 @@ function addDevice(){
 // 🔄 Realtime Anzeige
 db.ref("geraete").on("value", snap=>{
   const data = snap.val() || {};
-  lagerTab.innerHTML="";
-  draussenTab.innerHTML="";
+  lagerTab.innerHTML = "";
+  draussenTab.innerHTML = "";
 
   Object.values(data).forEach(d=>{
     const imLager = d.anzahlLager > 0;
 
-    const div=document.createElement("div");
-    div.className="card";
-    div.style.borderLeft=`10px solid ${imLager?"green":"red"}`;
+    const div = document.createElement("div");
+    div.className = "card";
+    div.style.borderLeft = `10px solid ${imLager ? "green" : "red"}`;
 
-    div.innerHTML=`
+    // ✅ Dropdown wird HIER gebaut (JavaScript, nicht HTML)
     let checkoutDropdown = "";
 
-if(d.anzahlLager > 0){
-  checkoutDropdown = `
-    <select id="out${d.id}">
-      ${Array.from({length: d.anzahlLager}, (_, i) =>
-        `<option value="${i+1}">${i+1}</option>`
-      ).join("")}
-    </select>
-    <button onclick="checkout(${d.id})">Auschecken</button>
-  `;
-} else {
-  checkoutDropdown = `<i>Kein Bestand im Lager</i>`;
-}
+    if(d.anzahlLager > 0){
+      checkoutDropdown = `
+        <select id="out${d.id}">
+          ${Array.from({length: d.anzahlLager}, (_, i) =>
+            `<option value="${i+1}">${i+1}</option>`
+          ).join("")}
+        </select>
+        <button onclick="checkout(${d.id})">Auschecken</button>
+      `;
+    } else {
+      checkoutDropdown = `<i>Kein Bestand im Lager</i>`;
+    }
 
-div.innerHTML=`
-  <b>${d.name}</b><br>
-  Lager: ${d.lager} | Regal: ${d.regal}<br>
-  <b>Im Lager: ${d.anzahlLager} / ${d.anzahlGesamt}</b><br><br>
+    div.innerHTML = `
+      <b>${d.name}</b><br>
+      Lager: ${d.lager} | Regal: ${d.regal}<br>
+      <b>Im Lager: ${d.anzahlLager} / ${d.anzahlGesamt}</b><br><br>
 
-  ${checkoutDropdown}
+      ${checkoutDropdown}
 
-  <br><br>
+      <br><br>
 
-  <input type="number" id="in${d.id}" placeholder="Menge zurückbringen">
-  <button onclick="checkin(${d.id})">Zurückbringen</button>
+      <input type="number" id="in${d.id}" placeholder="Menge zurückbringen">
+      <button onclick="checkin(${d.id})">Zurückbringen</button>
 
-  <br><br>
+      <br><br>
 
-  <button onclick="deleteDevice(${d.id})" style="background:red;color:white;">
-    Gerät löschen
-  </button>
+      <button onclick="deleteDevice(${d.id})" style="background:red;color:white;">
+        Gerät löschen
+      </button>
 
-  <div id="qr${d.id}" style="margin-top:10px;"></div>
-`;
+      <div id="qr${d.id}" style="margin-top:10px;"></div>
     `;
 
     if(imLager){
