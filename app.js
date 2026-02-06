@@ -58,27 +58,41 @@ db.ref("geraete").on("value", snap=>{
     div.style.borderLeft=`10px solid ${imLager?"green":"red"}`;
 
     div.innerHTML=`
-      <b>${d.name}</b><br>
-      Lager: ${d.lager} | Regal: ${d.regal}<br>
-      <b>Im Lager: ${d.anzahlLager} / ${d.anzahlGesamt}</b><br><br>
+    let checkoutDropdown = "";
 
-      ${d.anzahlLager > 0 ? `
-<select id="out${d.id}">
-  ${[...Array(d.anzahlLager).keys()].map(i =>
-    `<option value="${i+1}">${i+1}</option>`
-  ).join('')}
-</select>
-<button onclick="checkout(${d.id})">Auschecken</button>
-` : `<i>Kein Bestand im Lager</i>`}
+if(d.anzahlLager > 0){
+  checkoutDropdown = `
+    <select id="out${d.id}">
+      ${Array.from({length: d.anzahlLager}, (_, i) =>
+        `<option value="${i+1}">${i+1}</option>`
+      ).join("")}
+    </select>
+    <button onclick="checkout(${d.id})">Auschecken</button>
+  `;
+} else {
+  checkoutDropdown = `<i>Kein Bestand im Lager</i>`;
+}
 
-      <input type="number" id="in${d.id}" placeholder="Menge zurückbringen">
-      <button onclick="checkin(${d.id})">Zurückbringen</button>
+div.innerHTML=`
+  <b>${d.name}</b><br>
+  Lager: ${d.lager} | Regal: ${d.regal}<br>
+  <b>Im Lager: ${d.anzahlLager} / ${d.anzahlGesamt}</b><br><br>
 
-      <button onclick="deleteDevice(${d.id})" style="background:red;color:white;">
-        Gerät löschen
-      </button>
+  ${checkoutDropdown}
 
-      <div id="qr${d.id}" style="margin-top:10px;"></div>
+  <br><br>
+
+  <input type="number" id="in${d.id}" placeholder="Menge zurückbringen">
+  <button onclick="checkin(${d.id})">Zurückbringen</button>
+
+  <br><br>
+
+  <button onclick="deleteDevice(${d.id})" style="background:red;color:white;">
+    Gerät löschen
+  </button>
+
+  <div id="qr${d.id}" style="margin-top:10px;"></div>
+`;
     `;
 
     if(imLager){
