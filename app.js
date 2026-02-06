@@ -20,15 +20,33 @@ function showTab(tab){
 
 // ➕ Gerät hinzufügen
 function addDevice(){
-  const name = nameInput.value;
-  const lager = lagerInput.value;
-  const regal = regalInput.value;
-  const anzahl = parseInt(anzahlInput.value);
+  const name = document.getElementById("name").value;
+  const lager = document.getElementById("lager").value;
+  const regal = document.getElementById("regal").value;
+  const anzahl = parseInt(document.getElementById("anzahl").value);
 
   if(!name || !lager || !regal || !anzahl){
     alert("Alles ausfüllen!");
     return;
   }
+
+  const id = Date.now();
+
+  db.ref("geraete/"+id).set({
+    id: id,
+    name: name,
+    lager: lager,
+    regal: regal,
+    anzahlGesamt: anzahl,
+    anzahlLager: anzahl
+  });
+
+  // Input-Felder leeren
+  document.getElementById("name").value = "";
+  document.getElementById("lager").value = "";
+  document.getElementById("regal").value = "";
+  document.getElementById("anzahl").value = "";
+}
 
   const id = Date.now();
 
