@@ -115,13 +115,6 @@ function checkout(id){
 
   db.ref("geraete/"+id).once("value").then(snap=>{
     const d = snap.val();
-
-    db.ref("geraete/"+id).update({
-      anzahlLager: d.anzahlLager - menge
-    });
-  });
-}
-
     db.ref("geraete/"+id).update({
       anzahlLager: d.anzahlLager - menge
     });
