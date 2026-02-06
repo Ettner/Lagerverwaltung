@@ -8,12 +8,12 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 body{font-family:Arial;margin:15px;background:#f2f2f2}
-input,button{width:100%;padding:12px;margin:6px 0;font-size:18px}
+input,button,select{width:100%;padding:12px;margin:6px 0;font-size:18px}
 .card{background:white;padding:10px;margin:10px 0;border-radius:8px}
+.tabbtn{width:48%}
 </style>
 </head>
 <body>
@@ -26,19 +26,13 @@ input,button{width:100%;padding:12px;margin:6px 0;font-size:18px}
 <button onclick="addDevice()">Hinzufügen</button>
 
 <h2>Geräte</h2>
-
-<div style="display:flex; gap:10px; margin-bottom:10px;">
-  <button onclick="showTab('lager')">Im Lager</button>
-  <button onclick="showTab('draussen')">Ausgecheckt</button>
+<div style="display:flex; gap:4%;">
+  <button class="tabbtn" onclick="showTab('lager')">Im Lager</button>
+  <button class="tabbtn" onclick="showTab('draussen')">Ausgecheckt</button>
 </div>
 
 <div id="lagerTab"></div>
 <div id="draussenTab" style="display:none;"></div>
-
-<h2>QR scannen</h2>
-<button onclick="startScan()">Scanner starten</button>
-<div id="reader"></div>
-<div id="scanResult"></div>
 
 <script src="app.js"></script>
 </body>
