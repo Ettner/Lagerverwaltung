@@ -17,6 +17,7 @@ function showTab(tab){
   document.getElementById("draussenTab").style.display = tab==="draussen"?"block":"none";
 }
 
+
 // ➕ Gerät hinzufügen
 function addDevice(){
   const name = document.getElementById("name").value;
@@ -57,8 +58,8 @@ db.ref("geraete").on("value", snap=>{
     div.className = "card";
     div.style.borderLeft = `10px solid ${imLager ? "green" : "red"}`;
 
+    // 🔽 Checkout Dropdown (1 bis Lagerbestand)
     let checkoutDropdown = "";
-
     if(d.anzahlLager > 0){
       checkoutDropdown = `
         <select id="out${d.id}">
@@ -72,20 +73,32 @@ db.ref("geraete").on("value", snap=>{
       checkoutDropdown = `<i>Kein Bestand im Lager</i>`;
     }
 
+    // 🔼 Checkin Dropdown (1 bis fehlende Menge)
+    const fehlend = d.anzahlGesamt - d.anzahlLager;
+    let checkinDropdown = "";
+    if(fehlend > 0){
+      checkinDropdown = `
+        <select id="in${d.id}">
+          ${Array.from({length: fehlend}, (_, i) =>
+            `<option value="${i+1}">${i+1}</option>`
+          ).join("")}
+        </select>
+        <button onclick="checkin(${d.id})">Zurückbringen</button>
+      `;
+    } else {
+      checkinDropdown = `<i>Alles im Lager</i>`;
+    }
+
     div.innerHTML = `
       <b>${d.name}</b><br>
       Lager: ${d.lager} | Regal: ${d.regal}<br>
       <b>Im Lager: ${d.anzahlLager} / ${d.anzahlGesamt}</b><br><br>
 
       ${checkoutDropdown}
+      <br><br>
+      ${checkinDropdown}
 
       <br><br>
-
-      <input type="number" id="in${d.id}" placeholder="Menge zurückbringen">
-      <button onclick="checkin(${d.id})">Zurückbringen</button>
-
-      <br><br>
-
       <button onclick="deleteDevice(${d.id})" style="background:red;color:white;">
         Gerät löschen
       </button>
