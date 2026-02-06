@@ -94,8 +94,14 @@ db.ref("geraete").on("value", snap=>{
 function checkout(id){
   const menge = parseInt(document.getElementById("out"+id).value);
 
+  if(!menge || menge <= 0){
+    alert("Gültige Menge eingeben!");
+    return;
+  }
+
   db.ref("geraete/"+id).once("value").then(snap=>{
     const d = snap.val();
+
     if(menge > d.anzahlLager){
       alert("Nicht so viele im Lager!");
       return;
@@ -111,6 +117,11 @@ function checkout(id){
 // ➕ Zurückbringen
 function checkin(id){
   const menge = parseInt(document.getElementById("in"+id).value);
+
+  if(!menge || menge <= 0){
+    alert("Gültige Menge eingeben!");
+    return;
+  }
 
   db.ref("geraete/"+id).once("value").then(snap=>{
     const d = snap.val();
