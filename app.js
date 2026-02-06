@@ -62,8 +62,14 @@ db.ref("geraete").on("value", snap=>{
       Lager: ${d.lager} | Regal: ${d.regal}<br>
       <b>Im Lager: ${d.anzahlLager} / ${d.anzahlGesamt}</b><br><br>
 
-      <input type="number" id="out${d.id}" placeholder="Menge auschecken">
-      <button onclick="checkout(${d.id})">Auschecken</button>
+      ${d.anzahlLager > 0 ? `
+<select id="out${d.id}">
+  ${[...Array(d.anzahlLager).keys()].map(i =>
+    `<option value="${i+1}">${i+1}</option>`
+  ).join('')}
+</select>
+<button onclick="checkout(${d.id})">Auschecken</button>
+` : `<i>Kein Bestand im Lager</i>`}
 
       <input type="number" id="in${d.id}" placeholder="Menge zurückbringen">
       <button onclick="checkin(${d.id})">Zurückbringen</button>
