@@ -26,7 +26,14 @@ input,button{width:100%;padding:12px;margin:6px 0;font-size:18px}
 <button onclick="addDevice()">Hinzufügen</button>
 
 <h2>Geräte</h2>
-<div id="list"></div>
+
+<div style="display:flex; gap:10px; margin-bottom:10px;">
+  <button onclick="showTab('lager')">Im Lager</button>
+  <button onclick="showTab('draussen')">Ausgecheckt</button>
+</div>
+
+<div id="lagerTab"></div>
+<div id="draussenTab" style="display:none;"></div>
 
 <h2>QR scannen</h2>
 <button onclick="startScan()">Scanner starten</button>
