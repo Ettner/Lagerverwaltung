@@ -12,6 +12,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+function showTab(tab){
+  document.getElementById("lagerTab").style.display = tab==="lager"?"block":"none";
+  document.getElementById("draussenTab").style.display = tab==="draussen"?"block":"none";
+}
 
 // ➕ Gerät hinzufügen
 function addDevice(){
@@ -43,7 +47,8 @@ function addDevice(){
 // 🔄 Realtime Anzeige
 db.ref("geraete").on("value", snap=>{
   const data = snap.val() || {};
-  list.innerHTML="";
+  lagerTab.innerHTML="";
+  draussenTab.innerHTML="";
 
   Object.values(data).forEach(d=>{
     const imLager = d.anzahlLager > 0;
@@ -55,7 +60,7 @@ db.ref("geraete").on("value", snap=>{
     div.innerHTML=`
       <b>${d.name}</b><br>
       Lager: ${d.lager} | Regal: ${d.regal}<br>
-      Bestand: ${d.anzahlLager} / ${d.anzahlGesamt}<br><br>
+      <b>Im Lager: ${d.anzahlLager} / ${d.anzahlGesamt}</b><br><br>
 
       <input type="number" id="out${d.id}" placeholder="Menge auschecken">
       <button onclick="checkout(${d.id})">Auschecken</button>
@@ -70,7 +75,11 @@ db.ref("geraete").on("value", snap=>{
       <div id="qr${d.id}" style="margin-top:10px;"></div>
     `;
 
-    list.appendChild(div);
+    if(imLager){
+      lagerTab.appendChild(div);
+    } else {
+      draussenTab.appendChild(div);
+    }
 
     new QRCode(document.getElementById(`qr${d.id}`),{
       text: String(d.id),
