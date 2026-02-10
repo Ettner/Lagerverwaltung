@@ -8,46 +8,15 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-/* Popup */
-#popup{
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.7);
-  z-index:999;
-
-  display:flex;
-  justify-content:center;   /* horizontal mittig */
-  align-items:flex-start;   /* nicht vertikal mittig */
-  padding-top:60px;         /* 🔥 Abstand nach oben */
-}
-
-#popupContent{
-  background:white;
-  width:95%;
-  max-width:380px;
-  padding:15px;
-  border-radius:12px;
-}
-
-#reader video{
-  width:100% !important;
-  height:220px !important;
-  object-fit:cover;
-  border-radius:8px;
-}
+body{font-family:Arial;margin:15px;background:#f2f2f2}
+input,button,select{width:100%;padding:12px;margin:6px 0;font-size:18px}
+.card{background:white;padding:10px;margin:10px 0;border-radius:8px}
+.tabbtn{width:48%}
 </style>
 </head>
 <body>
-
-<h2>Scanner</h2>
-<button onclick="openScanner('view')">QR Anzeigen</button>
-<button onclick="openScanner('out')">QR Auschecken</button>
-<button onclick="openScanner('in')">QR Einchecken</button>
 
 <h2>Gerät hinzufügen</h2>
 <input id="name" placeholder="Gerätename">
@@ -64,15 +33,6 @@
 
 <div id="lagerTab"></div>
 <div id="draussenTab" style="display:none;"></div>
-
-<!-- Popup -->
-<div id="popup">
-  <div id="popupContent">
-    <div id="reader"></div>
-    <div id="scanResult"></div>
-    <button onclick="closeScanner()">Schließen</button>
-  </div>
-</div>
 
 <script src="app.js"></script>
 </body>
