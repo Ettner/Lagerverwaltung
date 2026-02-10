@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lagerverwaltung</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+
 <style>
 body{
   font-family:Arial;
@@ -51,3 +63,39 @@ input,button,select{
   border-radius:8px;
 }
 </style>
+</head>
+<body>
+
+<h2>Scanner</h2>
+<button onclick="openScanner('view')">QR Anzeigen</button>
+<button onclick="openScanner('out')">QR Auschecken</button>
+<button onclick="openScanner('in')">QR Einchecken</button>
+
+<h2>Gerät hinzufügen</h2>
+<input id="name" placeholder="Gerätename">
+<input id="lager" placeholder="Lager">
+<input id="regal" placeholder="Regal">
+<input id="anzahl" type="number" placeholder="Stückzahl">
+<button onclick="addDevice()">Hinzufügen</button>
+
+<h2>Geräte</h2>
+<div style="display:flex; gap:4%;">
+  <button class="tabbtn" onclick="showTab('lager')">Im Lager</button>
+  <button class="tabbtn" onclick="showTab('draussen')">Ausgecheckt</button>
+</div>
+
+<div id="lagerTab"></div>
+<div id="draussenTab" style="display:none;"></div>
+
+<!-- Popup -->
+<div id="popup">
+  <div id="popupContent">
+    <div id="reader"></div>
+    <div id="scanResult"></div>
+    <button onclick="closeScanner()">Schließen</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
