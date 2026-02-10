@@ -33,7 +33,7 @@ input,button,select{
 
 .tabbtn{width:48%}
 
-/* 🔽 iPhone optimiertes Popup */
+/* 🔽 Popup weiter oben (iOS Style) */
 #popup{
   display:none;
   position:fixed;
@@ -41,8 +41,6 @@ input,button,select{
   width:100%;height:100%;
   background:rgba(0,0,0,0.7);
   z-index:999;
-  align-items:center;
-  justify-content:center;
 }
 
 #popupContent{
@@ -51,10 +49,11 @@ input,button,select{
   max-width:380px;
   padding:15px;
   border-radius:12px;
-}
 
-#reader{
-  width:100%;
+  position:absolute;
+  top:40px;          /* 🔥 hier wird es nach oben geschoben */
+  left:50%;
+  transform:translateX(-50%);
 }
 
 #reader video{
