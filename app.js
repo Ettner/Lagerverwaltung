@@ -153,3 +153,63 @@ function deleteDevice(id){
     db.ref("geraete/"+id).remove();
   }
 }
+
+let scannerMode = "";
+let qrScanner;
+
+function openScanner(mode){
+  scannerMode = mode;
+  document.getElementById("popup").style.display="block";
+  document.getElementById("scanResult").innerHTML="";
+
+  qrScanner = new Html5Qrcode("reader");
+  qrScanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    onScanSuccess
+  );
+}
+
+function closeScanner(){
+  if(qrScanner){
+    qrScanner.stop().then(()=>{
+      document.getElementById("popup").style.display="none";
+      document.getElementById("reader").innerHTML="";
+    });
+  }
+}
+
+function onScanSuccess(id){
+  qrScanner.stop();
+
+  db.ref("geraete/"+id).once("value").then(snap=>{
+    const d = snap.val();
+    if(!d){
+      scanResult.innerHTML="Gerät nicht gefunden!";
+      return;
+    }
+
+    if(scannerMode==="view"){
+      scanResult.innerHTML=`
+        <h3>${d.name}</h3>
+        Lager: ${d.lager}<br>
+        Regal: ${d.regal}<br>
+        Bestand: ${d.anzahlLager}/${d.anzahlGesamt}
+      `;
+    }
+
+    if(scannerMode==="out" && d.anzahlLager>0){
+      db.ref("geraete/"+id).update({
+        anzahlLager: d.anzahlLager - 1
+      });
+      scanResult.innerHTML="1 Gerät ausgecheckt ✅";
+    }
+
+    if(scannerMode==="in"){
+      db.ref("geraete/"+id).update({
+        anzahlLager: d.anzahlLager + 1
+      });
+      scanResult.innerHTML="1 Gerät eingecheckt ✅";
+    }
+  });
+}
