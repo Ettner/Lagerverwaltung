@@ -62,14 +62,25 @@ input,button,select{
   object-fit:cover;
   border-radius:8px;
 }
+  .outBtn{
+  background:#d9534f;
+  color:white;
+  font-weight:bold;
+}
+
+.inBtn{
+  background:#28a745;
+  color:white;
+  font-weight:bold;
+}
 </style>
 </head>
 <body>
 
 <h2>Scanner</h2>
 <button onclick="openScanner('view')">QR Anzeigen</button>
-<button onclick="openScanner('out')">QR Auschecken</button>
-<button onclick="openScanner('in')">QR Einchecken</button>
+<button class="outBtn" onclick="openScanner('out')">QR Auschecken</button>
+<button class="inBtn" onclick="openScanner('in')">QR Einchecken</button>
 
 <h2>Gerät hinzufügen</h2>
 <input id="name" placeholder="Gerätename">
